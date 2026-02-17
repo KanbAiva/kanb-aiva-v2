@@ -3,28 +3,29 @@ const pino = require('pino');
 const express = require('express');
 const app = express();
 
-app.get('/', (req, res) => res.send('System Active 👑'));
+app.get('/', (req, res) => res.send('System Online 👑'));
 app.listen(process.env.PORT || 8000);
 
 async function startEmpire() {
-    // تغيير الهوية تماماً
-    const { state, saveCreds } = await useMultiFileAuthState('Empire_V2_Final');
+    // جلسة نظيفة تماماً
+    const { state, saveCreds } = await useMultiFileAuthState('session_auth');
 
     const sock = makeWASocket({
         auth: state,
         logger: pino({ level: 'silent' }),
-        browser: ["Ubuntu", "Chrome", "110.0.5481.177"], 
         printQRInTerminal: false
     });
 
     if (!sock.authState.creds.registered) {
-        console.log("⏳ استراحة محارب (60 ثانية) قبل طلب الكود...");
-        await delay(60000); 
+        // انتظار بسيط لاستقرار الاتصال بالسيرفر
+        console.log("⏳ نظام الانتظار السيادي (30 ثانية)...");
+        await delay(30000); 
         try {
+            // طلب كود الربط المباشر لرقمك
             let code = await sock.requestPairingCode("201228996559"); 
-            console.log(`\n👑 كود الربط الجديد: ${code}\n`);
+            console.log(`\n👑 كود الربط الخاص بـ 𝕂𝕒نـب ايفـا هو: ${code}\n`);
         } catch (e) {
-            console.log("❌ السيرفر مضغوط، جرب Redeploy بعد قليل.");
+            console.log("❌ حدث خطأ، يرجى إعادة التشغيل.");
         }
     }
     sock.ev.on('creds.update', saveCreds);
