@@ -1,14 +1,14 @@
-const { default: makeWASocket, useMultiFileAuthState } = require("@whiskeysockets/baileys");
+const { default: makeWASocket, useMultiFileAuthState, delay } = require("@whiskeysockets/baileys");
 const pino = require('pino');
 const express = require('express');
 const app = express();
 
-app.get('/', (req, res) => res.send('System Fast Active ⚡'));
+app.get('/', (req, res) => res.send('System Speed V3 ⚡'));
 app.listen(process.env.PORT || 8000);
 
 async function startEmpire() {
-    // استخدم اسم جلسة جديد تماماً لتجنب أي تعليق قديم
-    const { state, saveCreds } = await useMultiFileAuthState('fast_session_kanb');
+    // جلسة جديدة تماماً لضمان تخطي أي تعليق
+    const { state, saveCreds } = await useMultiFileAuthState('Empire_V3_Session');
 
     const sock = makeWASocket({
         auth: state,
@@ -18,13 +18,14 @@ async function startEmpire() {
     });
 
     if (!sock.authState.creds.registered) {
-        console.log("🚀 جاري طلب كود الربط الآن...");
+        // انتظار 5 ثوانٍ فقط لضمان استقرار الاتصال
+        console.log("🚀 جاري الربط في 5 ثوانٍ...");
+        await delay(5000); 
         try {
-            // الطلب هيتبعت فوراً
             let code = await sock.requestPairingCode("201228996559"); 
-            console.log(`\n👑 كود الربط الخاص بك هو: ${code}\n`);
+            console.log(`\n👑 كود الربط هو: ${code}\n`);
         } catch (e) {
-            console.log("❌ فشل الطلب، جرب تشغل الأمر تاني.");
+            console.log("❌ السيرفر مضغوط، كرر المحاولة فوراً.");
         }
     }
     sock.ev.on('creds.update', saveCreds);
