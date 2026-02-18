@@ -1,31 +1,30 @@
-const { default: makeWASocket, useMultiFileAuthState, delay } = require("@whiskeysockets/baileys");
+const { default: makeWASocket, useMultiFileAuthState } = require("@whiskeysockets/baileys");
 const pino = require('pino');
 const express = require('express');
 const app = express();
 
-app.get('/', (req, res) => res.send('System Online 👑'));
+app.get('/', (req, res) => res.send('System Fast Active ⚡'));
 app.listen(process.env.PORT || 8000);
 
 async function startEmpire() {
-    // جلسة نظيفة تماماً
-    const { state, saveCreds } = await useMultiFileAuthState('session_auth');
+    // استخدم اسم جلسة جديد تماماً لتجنب أي تعليق قديم
+    const { state, saveCreds } = await useMultiFileAuthState('fast_session_kanb');
 
     const sock = makeWASocket({
         auth: state,
         logger: pino({ level: 'silent' }),
+        browser: ["Ubuntu", "Chrome", "110.0.5481.177"], 
         printQRInTerminal: false
     });
 
     if (!sock.authState.creds.registered) {
-        // انتظار بسيط لاستقرار الاتصال بالسيرفر
-        console.log("⏳ نظام الانتظار السيادي (30 ثانية)...");
-        await delay(30000); 
+        console.log("🚀 جاري طلب كود الربط الآن...");
         try {
-            // طلب كود الربط المباشر لرقمك
+            // الطلب هيتبعت فوراً
             let code = await sock.requestPairingCode("201228996559"); 
-            console.log(`\n👑 كود الربط الخاص بـ 𝕂𝕒نـب ايفـا هو: ${code}\n`);
+            console.log(`\n👑 كود الربط الخاص بك هو: ${code}\n`);
         } catch (e) {
-            console.log("❌ حدث خطأ، يرجى إعادة التشغيل.");
+            console.log("❌ فشل الطلب، جرب تشغل الأمر تاني.");
         }
     }
     sock.ev.on('creds.update', saveCreds);
